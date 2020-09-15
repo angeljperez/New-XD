@@ -7,21 +7,34 @@ const connectObj= {
     user: `${process.env.MYUSER}`,
     password: `${process.env.MYPASSWORD}`,
     database: `${process.env.MYDATABASE}`,
-    port: `${process.env.MYPORT}`
+    port: `${process.env.MYPORT}`,
+   
 
 };
 
-const dbConn = mysql.createConnection(connectObj);
+let dbConn = mysql.createConnection(connectObj);
+
 
 try {
 
     dbConn.connect(function(err){
-        if (err) return err;
+        if (err) { 
+             if (err === 'PROTOCOL_CONNECTION_LOST'){
+                dbConn = mysql.createConnection(connectObj);
+                console.log("Base de datos corriendo");
+             }
+                       
+            throw err;
+         }else{
         console.log("Base de datos corriendo");
+        
+        }
     });
+    
     
 } catch (error) {
     return error;
 }
+
 
 module.exports = dbConn;
